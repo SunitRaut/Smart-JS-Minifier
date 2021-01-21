@@ -1,0 +1,81 @@
+<html>
+
+<head>
+<title>
+Smart JS Minifier
+</title>
+<style>
+#input-js, #output-js {height:400px;width:100%;}
+</style>
+</head>
+
+
+<body>
+
+<textarea id='input-js'></textarea>
+<button onclick='minify()'>Minify</button>
+<textarea id='output-js'></textarea>
+
+
+<script>
+
+var input_txt="";
+var output_txt="";
+
+function minify()
+{
+	input_txt = document.getElementById("input-js").value;
+	output_txt = input_txt;
+	remove_singleline_comments();
+	document.getElementById("output-js").value = output_txt;
+	input_txt="";
+	output_txt="";
+}
+
+function remove_singleline_comments()
+{
+	var txt = output_txt;
+	console.log(txt.search("//"));
+	var index=0; var rem_txt = txt;
+	txt="";
+	
+		
+	while(rem_txt.search("//")>=0)
+	{
+		index = rem_txt.search("//");
+		var i=0;var rem=1;
+		while(rem_txt.charAt(index+i)!="\n")
+		{
+			if((rem_txt.charAt(index+i)=="'")||(rem_txt.charAt(index+i)=='"'))
+				{rem=0;break;}
+			if((index+i)==rem_txt.length)
+				{rem=1;break;}
+			else
+				rem = 1;
+			i++;
+		}
+		if(rem==1) 
+		{	
+			txt = txt + rem_txt.slice(0,index);
+			rem_txt =  rem_txt.slice(index+i,rem_txt.length);
+		}
+		else
+		{
+			txt = txt + rem_txt.slice(0,index+2);
+			rem_txt =  rem_txt.slice(index+2,rem_txt.length);
+		}
+	console.log(txt.search("//"));
+	console.log(rem_txt);
+	}
+
+	output_txt = txt+rem_txt;
+}
+
+</script>
+
+
+
+
+</body>
+
+</html>
