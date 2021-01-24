@@ -27,7 +27,11 @@ function minify()
 	input_txt = document.getElementById("input-js").value;
 	output_txt = input_txt;
 	remove_singleline_comments();
+	//document.getElementById("output-js").value = output_txt;
+	remove_multiline_comments();
 	document.getElementById("output-js").value = output_txt;
+	remove_newlines();
+	document.getElementById("output-js").value = output_txt;	
 	input_txt="";
 	output_txt="";
 }
@@ -44,32 +48,90 @@ function remove_singleline_comments()
 	{
 		index = rem_txt.search("//");
 		var i=0;var rem=1;
-		while(rem_txt.charAt(index+i)!="\n")
+		var temp_txt = "";
+		temp_txt = rem_txt.slice(0,index+1);
+		//console.log("temp:"+temp_txt);
+		var num = 0;
+		if(temp_txt.search('"')>=0)
 		{
-			if((rem_txt.charAt(index+i)=="'")||(rem_txt.charAt(index+i)=='"'))
-				{rem=0;break;}
-			if((index+i)==rem_txt.length)
-				{rem=1;break;}
-			else
+			temp_txt = temp_txt.split('"');
+			num = temp_txt.length-1;
+		}
+		//console.log("num:"+num);
+		if(num>0)
+		{
+			if(num%2==0) //even
+			{
 				rem = 1;
-			i++;
+			}
+			else //odd
+			{
+				rem = 0;
+			}
+			
+		}
+		else{
+			while(rem_txt.charAt(index+i)!="\n")
+			{
+				/*if((rem_txt.charAt(index+i)=="'")||(rem_txt.charAt(index+i)=='"'))
+					{rem=0;break;}*/
+				if((index+i)==rem_txt.length)
+					{rem=1;break;}
+				else
+					{rem = 1;}
+				i++;
+			}
 		}
 		if(rem==1) 
 		{	
 			txt = txt + rem_txt.slice(0,index);
 			rem_txt =  rem_txt.slice(index+i,rem_txt.length);
 		}
-		else
+		else if(rem==0)
 		{
-			txt = txt + rem_txt.slice(0,index+2);
+			txt = txt + rem_txt.slice(0,index+2	);
 			rem_txt =  rem_txt.slice(index+2,rem_txt.length);
 		}
-	console.log(txt.search("//"));
-	console.log(rem_txt);
+	//console.log(txt.search("//"));
+	//console.log(rem_txt);
 	}
 
 	output_txt = txt+rem_txt;
 }
+
+
+function remove_multiline_comments()
+{
+	//return;
+	var txt = output_txt;
+	//console.log(txt)
+
+	while(txt.search("[/][*]")>=0)
+	{
+		var index1 = txt.search("[/][*]");
+		console.log("index1:"+index1);
+		//var temp = txt.slice(index1,txt.length);
+		var index2 = txt.search("[*][/]");
+		console.log("index2:"+index2);
+		
+		txt = txt.slice(0,index1) + txt.slice(index2+2,txt.length);
+		
+	}
+	output_txt = txt;
+	
+	
+}
+
+
+
+function remove_newlines()
+{
+	output_txt = output_txt.replace(/[\n]/g,"");
+	output_txt = output_txt.replace(/  /g," ");
+	output_txt = output_txt.replace(/[\t]/g,"");
+	
+}
+
 
 </script>
 
